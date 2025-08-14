@@ -1,6 +1,5 @@
 import { getSession } from "@/auth";
 import { Button } from "@/components/ui/button";
-import { signOut } from "next-auth/react";
 import { redirect } from "next/navigation";
 
 export default async function DashboardLayout({
@@ -18,12 +17,7 @@ export default async function DashboardLayout({
         <div className='mx-auto max-w-6xl px-6 py-4'>
           <div className='flex items-center justify-between'>
             <h1 className='text-lg font-semibold'>Bastion Dashboard</h1>
-            <form
-              action={async () => {
-                "use server";
-                await signOut();
-              }}
-            >
+            <form action='/api/auth/signout' method='post'>
               <Button type='submit' variant='outline'>
                 Sign out
               </Button>

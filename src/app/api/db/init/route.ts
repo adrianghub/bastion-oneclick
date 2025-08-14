@@ -57,6 +57,18 @@ export async function POST() {
     )`;
 
     await sql`CREATE UNIQUE INDEX IF NOT EXISTS agents_uuid_idx ON public.agents (uuid)`;
+
+    // Agent claim tokens table (Phase 3)
+    await sql`CREATE TABLE IF NOT EXISTS public.agent_claim_tokens (
+      id SERIAL PRIMARY KEY,
+      token TEXT UNIQUE NOT NULL,
+      user_id TEXT NOT NULL REFERENCES public.users(id) ON DELETE CASCADE,
+      expires_at TIMESTAMPTZ NOT NULL,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    )`;
+
+    await sql`CREATE INDEX IF NOT EXISTS agent_claim_tokens_token_idx ON public.agent_claim_tokens (token)`;
+    await sql`CREATE INDEX IF NOT EXISTS agent_claim_tokens_user_id_idx ON public.agent_claim_tokens (user_id)`;
     return NextResponse.json({ ok: true });
   } catch (error) {
     console.error("/api/db/init error", error);
